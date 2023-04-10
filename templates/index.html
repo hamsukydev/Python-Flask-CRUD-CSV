@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</head>
+
+<body class="bg-info">
+    <div class="p-3">
+        <div class="well text-center">
+            <h1>Management System  </h1>
+        </div>
+        <br>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col md-12">
+                <div class="jumbotron p-3">
+<!--                    <h2>Manage Transit Information <button type="button" class="btn btn-success float-right"-->
+<!--                            data-toggle="modal" data-target="#create">Add New Transits</button> </h2>-->
+
+                    <table class="table table-hover table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        {% for row in stations %}
+                        <tr>
+                            <td>{{row.id}}</td>
+                            <td>{{row.code}}</td>
+                            <td>{{row.name}}</td>
+                            <td>{{row.stations_type}}</td>
+                            <td>
+                                <a href="/update/{{row.id}}" class="btn btn-primary btn-xs" data-toggle="modal"
+                                    data-target="#edit{{row.id}}">Edit</a>
+                                <a href="/delete/{{row.id}}" class="btn btn-danger btn-xs">Delete</a>
+                            </td>
+                        </tr>
+
+                        <div id="edit{{row.id}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Update Transit Information</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/update/{{row.id}}" method="POST">
+                                            <div class="form-group">
+                                                <label>ID:</label>
+                                                <input type="text" class="form-control" name="id" value="{{row.id}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Code:</label>
+                                                <input type="text" class="form-control" name="code"
+                                                    value="{{row.code}}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Name:</label>
+                                                <input type="text" class="form-control" name="name"
+                                                    value="{{row.name}}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Type:</label>
+                                                <input type="text" class="form-control" name="stations_type"
+                                                    value="{{row.stations_type}}">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <button class="btn btn-primary" type="submit">Update</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </table>
+                    <hr>
+                    <h4>Upload CSV file</h4>
+                    <form method="POST" action="{{url_for('uploadFiles')}}" enctype="multipart/form-data">
+                        <input type="file" name="file">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                    <hr>
+<!--                    <h4>Download Transit Station CSV Report</h4>-->
+<!--                    <a href="{{ url_for('download_csv') }}" class="btn btn-success">Download CSV</a>-->
+
+                </div>
+
+                <div id="create" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add New Transit</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('create')}}" method="POST">
+                                    <div class="form-group">
+                                        <label>ID:</label>
+                                        <input type="text" class="form-control" name="id" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Code:</label>
+                                        <input type="text" class="form-control" name="code" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name:</label>
+                                        <input type="text" class="form-control" name="name" required="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Type:</label>
+                                        <input type="text" class="form-control" name="stations_type" required="1">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Add New Transit</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
